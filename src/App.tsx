@@ -515,8 +515,10 @@ function DashboardTooltip({ active, payload, suffix }: TooltipProps & { suffix: 
   return (
     <div className="tooltip">
       <strong>{formatPeriodLabel(period)}</strong>
-      {actualRows.length > 0 ? <TooltipRows title="Faktisk" rows={actualRows} suffix={suffix} /> : null}
-      {projectionRows.length > 0 ? <TooltipRows title="Fremskrevet nivå" rows={projectionRows} suffix={suffix} /> : null}
+      {actualRows.length > 0 ? <TooltipRows rows={actualRows} suffix={suffix} /> : null}
+      {projectionRows.length > 0 ? (
+        <TooltipRows title={<span className="projection-label">Fremskrevet</span>} rows={projectionRows} suffix={suffix} />
+      ) : null}
     </div>
   );
 }
@@ -527,10 +529,10 @@ type TooltipRow = {
   value: number;
 };
 
-function TooltipRows({ title, rows, suffix }: { title: string; rows: TooltipRow[]; suffix: string }) {
+function TooltipRows({ title, rows, suffix }: { title?: ReactNode; rows: TooltipRow[]; suffix: string }) {
   return (
     <div className="tooltip-section">
-      <span className="tooltip-heading">{title}</span>
+      {title}
       {rows.map((row) => (
         <span className="tooltip-row" key={row.label}>
           <i style={{ background: row.color }} />

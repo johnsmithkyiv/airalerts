@@ -260,11 +260,6 @@ footer {
   gap: 4px;
 }
 
-.tooltip-heading {
-  color: #f4f7fb;
-  font-weight: 800;
-}
-
 .tooltip-row {
   display: inline-flex;
   align-items: center;
@@ -353,6 +348,10 @@ td span {
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+.tooltip .projection-label {
+  color: #f7b267;
 }
 
 .change {
