@@ -868,17 +868,13 @@ function compareValues(value: number, previous: number): "up" | "down" | "flat" 
 function getTrendHeadline(direction: TrendDirection): string {
   switch (direction) {
     case "major-up":
-      return "Betydelig høyere belastning enn i perioden før";
     case "up":
-      return "Høyere belastning enn i perioden før";
     case "slight-up":
-      return "Litt høyere belastning enn i perioden før";
+      return "Høyere belastning enn i perioden før";
     case "major-down":
-      return "Betydelig lavere belastning enn i perioden før";
     case "down":
-      return "Lavere belastning enn i perioden før";
     case "slight-down":
-      return "Litt lavere belastning enn i perioden før";
+      return "Lavere belastning enn i perioden før";
     case "mixed":
       return "Blandet trend: antall og varighet går hver sin vei";
     case "flat":
@@ -891,17 +887,13 @@ function getTrendHeadline(direction: TrendDirection): string {
 function getTrendDescription(direction: TrendDirection): string {
   switch (direction) {
     case "major-up":
-      return "Økningen er betydelig sammenlignet med forrige periode.";
     case "up":
-      return "Økningen er tydelig sammenlignet med forrige periode.";
     case "slight-up":
-      return "Økningen er liten sammenlignet med forrige periode.";
+      return "Belastningen er høyere enn i forrige periode.";
     case "major-down":
-      return "Nedgangen er betydelig sammenlignet med forrige periode.";
     case "down":
-      return "Nedgangen er tydelig sammenlignet med forrige periode.";
     case "slight-down":
-      return "Nedgangen er liten sammenlignet med forrige periode.";
+      return "Belastningen er lavere enn i forrige periode.";
     case "mixed":
       return "Antall alarmer og samlet varslingstid utviklet seg i motsatt retning.";
     case "flat":
