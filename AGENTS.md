@@ -2,6 +2,14 @@
 
 This is a static Vite dashboard published through GitHub Pages at `https://johnsmithkyiv.github.io/airalerts/`.
 
+## Current Setup
+
+- Repository: `https://github.com/johnsmithkyiv/airalerts`
+- The `main` branch deploys automatically, and the workflow also refreshes data hourly at minute 17 UTC.
+- Historical data comes from `data.gov.ua`; recent Kyiv City alerts and live status come from Alerts.in.ua.
+- `ALERTS_IN_UA_TOKEN` is stored only as a GitHub Actions repository secret. Never request, display, store, or commit it.
+- The chart tooltip has no label for actual values; only projected values show the yellow `Fremskrevet` label.
+
 ## Build
 
 The data build requires an Alerts.in.ua API token:
