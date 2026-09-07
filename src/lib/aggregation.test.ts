@@ -24,9 +24,23 @@ describe("buildDashboardData", () => {
       baseMetadata,
     );
 
-    expect(dashboard.weekly.map((period) => period.alertCount)).toEqual([1, 1]);
-    expect(dashboard.daily.map((period) => period.alertCount)).toEqual([1, 1]);
-    expect(dashboard.monthly[0].alertCount).toBe(2);
+    expect(dashboard.weekly.filter((period) => period.alertCount > 0).map((period) => period.alertCount)).toEqual([1, 1]);
+    expect(dashboard.daily.filter((period) => period.alertCount > 0).map((period) => period.alertCount)).toEqual([1, 1]);
+    expect(dashboard.monthly.find((period) => period.id === "2024-01")?.alertCount).toBe(2);
+  });
+
+  it("includes empty periods through the build time", () => {
+    const dashboard = buildDashboardData(
+      [alert("2024-01-01T10:00:00", "2024-01-01T11:00:00")],
+      { ...baseMetadata, generatedAt: "2024-03-10T12:00:00.000Z" },
+    );
+    const currentDay = dashboard.daily.find((period) => period.id === "2024-03-10");
+    const emptyMonth = dashboard.monthly.find((period) => period.id === "2024-02");
+
+    expect(currentDay?.alertCount).toBe(0);
+    expect(currentDay?.alertHours).toBe(0);
+    expect(emptyMonth?.alertCount).toBe(0);
+    expect(emptyMonth?.alertHours).toBe(0);
   });
 
   it("splits alert hours across day boundaries", () => {

@@ -40,6 +40,7 @@ const DEFAULT_VISIBLE_CHART_POINTS: Record<PeriodMode, number> = {
   monthly: 60,
 };
 const MAX_ANIMATED_CHART_POINTS = 90;
+const DATA_STALE_AFTER_HOURS = 3;
 
 const periodLabels: Record<PeriodMode, { singular: string; plural: string }> = {
   daily: { singular: "dag", plural: "dager" },
@@ -151,6 +152,7 @@ function App() {
   }
 
   const periods = data[periodMode];
+  const dataIsStale = isDataStale(data.metadata.generatedAt);
   const chartRangeOptions: Array<[ChartRange, string]> =
     periodMode === "daily"
       ? [
@@ -218,7 +220,11 @@ function App() {
   return (
     <main className="shell">
       <div className="toolbar" aria-label="Dataoppdatering og valg">
-        {data.metadata.lastAlertEnd ? <p className="metadata-pill">Data til og med: {formatDateTime(data.metadata.lastAlertEnd)} Kyiv-tid</p> : null}
+        <p className={`metadata-pill${dataIsStale ? " metadata-warning" : ""}`}>
+          Sist oppdatert: {formatDateTime(data.metadata.generatedAt)} Kyiv-tid
+          {dataIsStale ? " (over 3 timer siden)" : null}
+        </p>
+        {data.metadata.lastAlertEnd ? <p className="metadata-pill">Siste registrerte alarm: {formatDateTime(data.metadata.lastAlertEnd)} Kyiv-tid</p> : null}
         <div className="toolbar-controls" aria-label="Valg for oversikten">
           <SegmentedControl<PeriodMode>
             label="Periode"
@@ -1023,6 +1029,12 @@ function formatCurrentProjectionSentence(period: PeriodStats, generatedAt: strin
 function isPeriodIncomplete(period: PeriodStats, generatedAt: string): boolean {
   const generatedDate = formatKyivDate(generatedAt);
   return period.start <= generatedDate && generatedDate <= period.end;
+}
+
+function isDataStale(generatedAt: string): boolean {
+  const generated = DateTime.fromISO(generatedAt, { zone: KYIV_ZONE });
+
+  return !generated.isValid || DateTime.now().setZone(KYIV_ZONE).diff(generated, "hours").hours > DATA_STALE_AFTER_HOURS;
 }
 
 function formatKyivDate(value: string): string {

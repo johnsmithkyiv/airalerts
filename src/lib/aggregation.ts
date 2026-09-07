@@ -47,9 +47,9 @@ export function buildDashboardData(rawAlerts: RawAlert[], metadata: MetadataInpu
         ? capTime.toISO()
         : null,
     },
-    daily: aggregatePeriod(countableIntervals, mergedIntervals, "day"),
-    weekly: aggregatePeriod(countableIntervals, mergedIntervals, "week"),
-    monthly: aggregatePeriod(countableIntervals, mergedIntervals, "month"),
+    daily: aggregatePeriod(countableIntervals, mergedIntervals, "day", capTime),
+    weekly: aggregatePeriod(countableIntervals, mergedIntervals, "week", capTime),
+    monthly: aggregatePeriod(countableIntervals, mergedIntervals, "month", capTime),
   };
 }
 
@@ -98,7 +98,7 @@ function mergeIntervals(intervals: Interval[]): Interval[] {
   return merged;
 }
 
-function aggregatePeriod(countableIntervals: Interval[], durationIntervals: Interval[], period: Period): PeriodStats[] {
+function aggregatePeriod(countableIntervals: Interval[], durationIntervals: Interval[], period: Period, capTime: DateTime): PeriodStats[] {
   const periods = new Map<string, PeriodStats>();
 
   for (const interval of countableIntervals) {
@@ -123,6 +123,18 @@ function aggregatePeriod(countableIntervals: Interval[], durationIntervals: Inte
       stats.alertHours += alertHours;
       stats.dayparts[daypart].alertHours += alertHours;
       cursor = segmentEnd;
+    }
+  }
+
+  const firstPeriodStart = countableIntervals[0]?.start.startOf(period);
+  const currentPeriodStart = capTime.startOf(period);
+
+  if (firstPeriodStart) {
+    let cursor = firstPeriodStart;
+
+    while (cursor <= currentPeriodStart) {
+      ensurePeriod(periods, cursor, period);
+      cursor = nextPeriod(cursor, period);
     }
   }
 
